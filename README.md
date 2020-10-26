@@ -1,3 +1,9 @@
+# Tic Tac Toe with MiniMax AI
+
+visit the page, click around
+
+# Create React App
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
