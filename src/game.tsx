@@ -54,7 +54,11 @@ export default class Game extends React.PureComponent<any, GameState> {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <AiButton grid={currentGrid} isTurnX={this.state.xIsNext} />
+          <AiButton
+            grid={currentGrid}
+            isTurnX={this.state.xIsNext}
+            doClick={(i, j) => this.handleClick(i, j)}
+          />
           <ol>{moves}</ol>
         </div>
       </div>

@@ -3,40 +3,94 @@
  */
 
 import React from "react";
-import TTTGrid, { X, O } from "./grid";
+import TTTGrid, { X, O, GridIndex } from "./grid";
 
 export interface AiButtonProps {
   grid: TTTGrid;
   isTurnX: boolean;
+  doClick: (i: GridIndex, j: GridIndex) => void;
 }
 
-export function AiButton({ grid, isTurnX }: AiButtonProps) {
+export function AiButton({ grid, isTurnX, doClick }: AiButtonProps) {
   return (
-    <button onClick={() => onClick(grid, isTurnX)}>Do Best Next Move</button>
+    <button onClick={() => handleClick(grid, isTurnX, doClick)}>
+      Do Best Next Move
+    </button>
   );
 }
 
-function onClick(grid: TTTGrid, isTurnX: boolean) {
-  const move = miniMax(grid, isTurnX);
-  if (move !== -1 && move !== 1) {
-    // this.clickSquare(...move);
+function handleClick(
+  grid: TTTGrid,
+  isTurnX: boolean,
+  doClick: (i: GridIndex, j: GridIndex) => void
+) {
+  if (grid.isBoardFull()) {
+    return;
+  }
+
+  const [, move] = miniMax(grid, isTurnX);
+  if (move) {
+    const [i, j] = move;
+    doClick(i, j);
   }
 }
 
 // MINIMAX
+// X is the maximizer, O is the minimizer
+type XWins = 1;
+const Xwins: XWins = 1;
+type OWins = -1;
+const Owins: OWins = -1;
+type Draw = 0;
+type Score = XWins | Draw | OWins;
+type GridPos = [GridIndex, GridIndex];
 
-function miniMax(grid: TTTGrid, isTurnX: boolean) {
-  // FIxZME wtfff
-  // base case
+function miniMax(
+  grid: TTTGrid,
+  isTurnX: boolean
+): [Score, GridPos | undefined] {
   const winner = grid.detectWinner();
   if (winner === X) {
-    return 1;
+    return [1, undefined];
   } else if (winner === O) {
-    return -1;
-  } else if (grid.isBoardFull()) {
-    return 0;
+    return [-1, undefined];
+  } else {
+    // either draw or not done
+    if (grid.isBoardFull()) {
+      return [0, undefined];
+    } else {
+      const minOrMax = isTurnX ? myMax : myMin;
+      const playerTurn = isTurnX ? X : O;
+
+      // assume you lose
+      let bestScore: Score = isTurnX ? Owins : Xwins;
+      let bestMove: GridPos | undefined = undefined;
+
+      for (let [i, j] of grid.possibleMoves()) {
+        const [possibleScore] = miniMax(
+          grid.withMove(playerTurn, i, j),
+          !isTurnX
+        );
+        bestScore = minOrMax(bestScore, possibleScore);
+        bestMove = bestScore === possibleScore ? [i, j] : bestMove;
+      }
+      return [bestScore, bestMove];
+    }
   }
 }
 
-// map integer representation of board state to win 1, loss -1, or draw 0 for X
-const m = new Map();
+// some type safety bs
+function myMax(x: Score, y: Score): Score {
+  if (x > y) {
+    return x;
+  } else {
+    return y;
+  }
+}
+function myMin(x: Score, y: Score): Score {
+  if (x < y) {
+    return x;
+  } else {
+    return y;
+  }
+}
