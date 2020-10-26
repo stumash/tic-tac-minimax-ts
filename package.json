@@ -2,7 +2,7 @@
   "name": "tic-tac-minimax-ts",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://stumash.github.io/tic-tac-minimax",
+  "homepage": "http://stumash.github.io/tic-tac-minimax-ts/",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
