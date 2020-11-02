@@ -13,8 +13,11 @@ export interface AiButtonProps {
 
 export function AiButton({ grid, isTurnX, doClick }: AiButtonProps) {
   return (
-    <button onClick={() => handleClick(grid, isTurnX, doClick)}>
-      Do Best Next Move
+    <button
+      className={"ai-button"}
+      onClick={() => handleClick(grid, isTurnX, doClick)}
+    >
+      AI Next Move
     </button>
   );
 }

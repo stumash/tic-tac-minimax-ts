@@ -27,13 +27,11 @@ export default class Game extends React.PureComponent<any, GameState> {
     const winner = currentGrid.detectWinner();
 
     const moves = history.map((grid, gridNumber) => {
-      const desc = gridNumber
-        ? "Go to move #" + gridNumber
-        : "Go to game start";
+      const desc = gridNumber ? `After Move #${gridNumber}` : "Empty Board";
       return (
-        <li key={grid.uniqueId()}>
+        <div key={grid.uniqueId()}>
           <button onClick={() => this.jumpTo(gridNumber)}>{desc}</button>
-        </li>
+        </div>
       );
     });
 
@@ -45,21 +43,26 @@ export default class Game extends React.PureComponent<any, GameState> {
     }
 
     return (
-      <div className="game">
-        <div className="game-board">
-          <Board
-            grid={currentGrid}
-            onClick={(i, j) => this.handleClick(i, j)}
-          />
+      <div>
+        <div className="game">
+          <div className="game-board">
+            <Board
+              grid={currentGrid}
+              onClick={(i, j) => this.handleClick(i, j)}
+            />
+          </div>
+          <div className="game-info">
+            <div className="game-player-turn">{status}</div>
+            <AiButton
+              grid={currentGrid}
+              isTurnX={this.state.xIsNext}
+              doClick={(i, j) => this.handleClick(i, j)}
+            />
+          </div>
         </div>
-        <div className="game-info">
-          <div>{status}</div>
-          <AiButton
-            grid={currentGrid}
-            isTurnX={this.state.xIsNext}
-            doClick={(i, j) => this.handleClick(i, j)}
-          />
-          <ol>{moves}</ol>
+        <div className={"game-moves-list"}>
+          Reset Game to
+          <div>{moves}</div>
         </div>
       </div>
     );
